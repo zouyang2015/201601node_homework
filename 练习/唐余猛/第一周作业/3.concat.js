@@ -1,7 +1,7 @@
 function myConcat(bufArray, length){
 
     //异常处理
-    if (arguments.length ===0) {
+    if (arguments.length === 0) {
         throw new error("argument must at least be an Array of Buffers.");
     }
 
