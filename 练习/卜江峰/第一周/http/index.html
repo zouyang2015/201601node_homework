@@ -14,13 +14,13 @@
         <div class="row">
             <div class="form-group col-md-2">
                 <label for="exampleInputEmail1">姓名</label>
-                <input type="text" class="form-control " id="exampleInputEmail1" placeholder="姓名">
+                <input type="text" name="name" class="form-control " id="exampleInputEmail1" placeholder="姓名">
             </div>
         </div>
         <div class="row">
             <div class="form-group col-md-2">
                 <label for="exampleInputPassword1">年龄</label>
-                <input type="number" class="form-control" id="exampleInputPassword1" placeholder="年龄">
+                <input type="number" name="age" class="form-control" id="exampleInputPassword1" placeholder="年龄">
             </div>
         </div>
         <div class="row">
@@ -56,6 +56,20 @@
     </table>
 </div>
 
+<script>
+    var submit=document.querySelector('button[type="submit"]');
+    submit.onclick=function(){
+        register();
+    }
+    function register(){
+        var username =document.querySelector('input[name="name"]');
+        var age = document.querySelector('input[name="age"]');
 
+        var xhr=new XMLHttpRequest();
+        xhr.open('POST','reg',true);
+
+    }
+
+</script>
 </body>
 </html>
