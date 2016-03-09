@@ -1,2 +1,2 @@
-上传包的地址：
+
 https://www.npmjs.com/package/lianfeihomework
