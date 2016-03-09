@@ -9,42 +9,53 @@
     <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 </head>
 <body>
-<form>
-    <div class="form-group">
-        <label for="exampleInputEmail1">Email address</label>
-        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
-    </div>
-    <div class="form-group">
-        <label for="exampleInputPassword1">Password</label>
-        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+<div class="row col-md-10 col-md-offset-1">
+    <div>
+        <div class="row">
+            <div class="form-group col-md-2">
+                <label for="exampleInputEmail1">姓名</label>
+                <input type="text" class="form-control " id="exampleInputEmail1" placeholder="姓名">
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-md-2">
+                <label for="exampleInputPassword1">年龄</label>
+                <input type="number" class="form-control" id="exampleInputPassword1" placeholder="年龄">
+            </div>
+        </div>
+        <div class="row">
+            <button type="submit" class="btn btn-default col-md-1">添加</button><br>
+            <button type="submit" class="btn btn-default col-md-1">查询</button>
+        </div>
     </div>
 
-    <button type="submit" class="btn btn-default">Submit</button>
-</form>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>姓名</th>
+            <th>年龄</th>
+            <th>操作</th>
 
-<table class="table">
-    <thead>
-    <tr>
-        <th>#</th>
-        <th>姓名</th>
-        <th>年龄</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr class="active">
-        <th scope="row">1</th>
-        <td>Column content</td>
-        <td>Column content</td>
-        <td>Column content</td>
-    </tr>
-    <tr class="info">
-        <th scope="row">5</th>
-        <td>Column content</td>
-        <td>Column content</td>
-        <td>Column content</td>
-    </tr>
-    </tbody>
-</table>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="active">
+            <th scope="row">1</th>
+            <td>Column content</td>
+            <td>Column content</td>
+            <td>Column content</td>
+        </tr>
+        <tr class="info">
+            <th scope="row">5</th>
+            <td>Column content</td>
+            <td>Column content</td>
+            <td>Column content</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
 
 </body>
 </html>
