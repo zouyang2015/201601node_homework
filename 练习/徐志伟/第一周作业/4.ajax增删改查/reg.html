@@ -13,6 +13,7 @@
         <span>密  码：</span><input type="text" id="pwd"><br>
         <input type="button" onclick="addUser();" id="addBtn" value="注 册"><br>
     </div>
+    <hr>
     <div>
         用户名：<input type="text" id="queryName"><input type="button" id="queryBtn" onclick="queryUsers();" value="搜 索">
     </div>
@@ -94,6 +95,7 @@
             toUpdateBtn.type = "button";
             toUpdateBtn.setAttribute("index", i);
             toUpdateBtn.value = "修 改";
+            toUpdateBtn.className="btn btn-info";
             toUpdateBtn.id = "toUpdate_" + i;
             toUpdateBtn.onclick =showUpdateInfo;
             operationTd.appendChild(toUpdateBtn);
@@ -104,6 +106,7 @@
             updateBtn.value = "提 交";
             updateBtn.id = "update_" + i;
             updateBtn.style.display = "none";
+            updateBtn.className="btn btn-warning";
             updateBtn.onclick =updateUser;
             operationTd.appendChild(updateBtn);
             //取消更新按钮
@@ -113,6 +116,7 @@
             cancelBtn.value = "取 消";
             cancelBtn.id = "cancel_" + i;
             cancelBtn.style.display = "none";
+            cancelBtn.className="btn btn-info";
             cancelBtn.onclick =hideUpdateInfo;
             operationTd.appendChild(cancelBtn);
             //删除按钮
@@ -120,6 +124,7 @@
             delBtn.type = "button";
             delBtn.setAttribute("index", i);
             delBtn.value = "删 除";
+            delBtn.className="btn btn-danger";
             delBtn.id = "del_" + i;
             delBtn.onclick =delUser;
             operationTd.appendChild(delBtn);
