@@ -41,7 +41,7 @@ var server = http.createServer(function(request,response){
             users.push(JSON.parse(str));
             //最后返回用户列表
             //这里要做本地数据的存储
-			fs.writeFileSync('./user.json',str);
+            fs.writeFileSync('./user.json',str);
             response.end(str);
         })
     }else if(urlObj.pathname == '/query'){
@@ -55,7 +55,8 @@ var server = http.createServer(function(request,response){
         });
         request.on('end',function(){
            //这里要对输入的数据进行校验
-
+            var jsonObj = fs.readFileSync('./user.json','utf-8');
+            response.end(jsonObj);
         })
 
     }
