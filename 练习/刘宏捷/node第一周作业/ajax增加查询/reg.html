@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ajax增加查询</title>
+    <style>
+        input{
+
+        }
+        span{
+            display:inline-block;
+            width:100px;
+            color:black;
+            font-size:18px;
+        }
+        .inp-box{
+            margin:0 auto;
+            margin-top:100px;
+            width:300px;
+        }
+        .btn-box{
+            margin-top:50px;
+            padding-left:2%;
+            width:90%;
+            height:30px;
+        }
+        .btn1,.btn2{
+            outline: none;
+            border:none;
+            display:block;
+            -float:left;
+            width:100px;
+            height:40px;
+            font-size:18px;
+            color:#000;
+            font-weight:bold;
+            background-color:cornflowerblue;
+            border:2px solid darkgray;
+            cursor: pointer;
+        }
+        .btn1{
+            float:left;
+
+        }
+        .btn2{
+            float:right;
+
+        }
+        h6{
+            margin:50px auto 0;
+            width:300px;
+            height:40px;
+            line-height: 40px;
+            text-align: center;
+            font-size:20px;
+        }
+        .tab-title{
+            margin:10px auto 0px;
+            width:300px;
+            height:40px;
+
+        }
+        .tab-title >span{
+            display:inline-block;
+            width:140px;
+            text-align: center;
+        }
+        table{
+            margin:0 auto;
+            width:300px;
+        }
+        td{
+            width:140px;
+            text-align: center;
+            font-size:18px;
+        }
+    </style>
+</head>
+<body>
+<div class="inp-box">
+    <span>用户名:</span><input type="text" name="username"><br><br>
+    <span>年&nbsp;龄:</span><input type="text" name="age"><br>
+    <div class="btn-box">
+        <input type="button" onclick="reg()" value="增加" class="btn1">
+        <input type="button" onclick="find()" value="查询" class="btn2">
+    </div>
+
+</div>
+<h6>查询返回数据</h6>
+<div class="tab-title">
+    <span>姓名</span>
+    <span>年龄</span>
+</div>
+
+<table>
+    <tbody>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+
+
+</body>
+<script>
+    function reg(){
+        var username = document.querySelector("input[name='username']").value;
+        var age = document.querySelector("input[name='age']").value;
+        var user= {
+            "username":username,
+            "age":age
+        }
+
+        //1.创建ajax对象 0
+        var xhr = new XMLHttpRequest();
+        //2.打开请求,指定参数 1
+        xhr.open('POST','/reg',true);
+        //3.指定接收响应式 注册当装套变化之后的回调函数
+        xhr.onreadystatechange = function(){
+            //当状态为4的时候 ，也就是响应已接受完毕的时候
+            if(xhr.readyState == 4){
+                if(xhr.status ==200){
+                    console.log(xhr);
+                    var result = xhr.responseText;
+                    console.log(result);
+                }else{
+                }
+            }
+        }
+        //指定请求提发送数据
+        xhr.send(JSON.stringify(user));
+    }
+
+    function find(){
+
+        //1.创建ajax对象 0
+        var xhr = new XMLHttpRequest();
+        //2.打开请求,指定参数 1
+        xhr.open('GET','/find',true);
+        //设置响应的类型，会自动把xhr.response转化成对应的类型
+        //xhr.responseType = 'json';
+        //3.指定接收响应式 注册当装套变化之后的回调函数
+        xhr.onreadystatechange = function(){
+            //当状态为4的时候 ，也就是响应已接受完毕的时候
+            if(xhr.readyState == 4){
+                if(xhr.status ==200){
+                    var result = JSON.parse(xhr.responseText);
+                    var users = result.data;
+                    var tbody = document.querySelector("table tbody");
+                    tbody.innerHTML = "";
+                    var tr, td1, td2;
+                    for (var i = 0, len = users.length; i < len; i++) {
+                        tr = document.createElement('tr');
+                        td1 = document.createElement('td');
+                        td2 = document.createElement('td');
+                        td1.innerHTML = users[i].username;
+                        td2.innerHTML = users[i].age;
+                        tr.appendChild(td1);
+                        tr.appendChild(td2);
+                        tbody.appendChild(tr);
+                    }
+                }else{
+                    console.log("网络错误");
+                }
+            }
+        }
+        //指定请求提发送数据
+        xhr.send();
+    }
+
+
+</script>
+</html>
