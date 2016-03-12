@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="http://apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css"/>
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="http://apps.bdimg.com/libs/handlebars.js/2.0.0-alpha.4/handlebars.min.js"></script>
+    <link rel="stylesheet" href="index.css"/>
+</head>
+<body>
+<div class="container">
+    <form action="" role="form">
+        <div class="form-group">
+            <label for="username">用户名</label>
+            <input class="form-control" type="text" name="username" id="username"/>
+        </div>
+        <div class="form-group">
+            <label for="age">年龄</label>
+            <input class="form-control" type="text" name="username" id="age"/>
+        </div>
+        <input type="button" id="btn" class="btn btn-success" value="提交"/>
+    </form>
+    <table class="table table-bordered table-hover">
+        <thead><tr><td>用户名</td><td>年龄</td></tr></thead>
+        <tbody id="tBody"></tbody>
+    </table>
+</div>
+<script type="text/x-handlebars-template" id="user-template">
+    {{#each this}}
+    <tr><td>{{username}}</td><td>{{age}}</td></tr>
+    {{/each}}
+</script>
+<script>
+    document.querySelector('#btn').onclick=function(){
+        var username = document.querySelector('#username').value,
+                age = document.querySelector('#age').value,
+                user = {username:username,age:age};
+        var xhr = new XMLHttpRequest();
+        xhr.open('post','/reg');
+        xhr.onreadystatechange = function(){
+            if(xhr.readyState ==4 && xhr.status == 200){
+                var data = JSON.parse(xhr.responseText);
+                var myTemplate = Handlebars.compile($('#user-template').html());
+                $('#tBody').html(myTemplate(data));
+            }
+        }
+        xhr.send(JSON.stringify(user));
+    }
+</script>
+</body>
+</html>
