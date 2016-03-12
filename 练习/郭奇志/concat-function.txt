@@ -1,0 +1,25 @@
+function concat(b1,b2,b3,size){
+    var s=new Buffer(size);
+    console.log(s);
+    if((b1.length+b2.length+b3.length)<size){
+        for(var i=0;i<b1.length;i++){
+            s[i]=b1[i];
+        }
+        for(var j=0;j<b2.length;j++){
+            s[b1.length-1+j+1]=b2[j];
+        }
+        for(var g=0;g<b3.length;g++){
+            s[b2.length-1+b1.length-1+1+g+1]=b3[g];
+        }
+    }
+    console.log(s);
+}
+
+var b1=new Buffer('Öé');
+var b2=new Buffer('·å');
+var b3=new Buffer('Åà');
+console.log(b1);
+console.log(b2);
+console.log(b3);
+
+concat(b1,b2,b3,10);

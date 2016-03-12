@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+用户名<input type="text" name="username"><br/>
+年龄<input type="text" name="age">
+<input type="button" onclick="reg()" value="注册">
+<input type="button" value="列表" onclick="listUser()">
+<table>
+    <tbody>
+    <tr>
+        <td>用户名</td>
+        <td>年龄</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+<script>
+
+
+    function reg(){
+        var username = document.querySelector("input[name='username']").value;
+        var age  =document.querySelector("input[name='age']").value;
+        var user = {
+            username:username,
+            age:age
+        };
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST','/reg',true);
+        xhr.responseType = 'json';
+        xhr.onreadystatechange = function(){
+            if(xhr.readyState == 4){
+                if(xhr.status == 200){
+                    var user = xhr.response;
+                    var tbody = document.querySelector("table tbody");
+                    var tr = document.createElement('tr');
+                    var td1 = document.createElement('td');
+                    td1.innerHTML =user.username;
+                    var td2 = document.createElement('td');
+                    td2.innerHTML =user.age;
+                    tr.appendChild(td1);
+                    tr.appendChild(td2);
+                    tbody.appendChild(tr);
+                }
+            }
+
+        }
+        //指定请求体发送数据
+        xhr.send(JSON.stringify(user));
+    }
+
+    function listUser(){
+
+        document.querySelector("input[name='username']").value = "";
+        document.querySelector("input[name='age']").value = "";
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET','/list',true);
+        xhr.onreadystatechange = function(e) {
+            if(xhr.readyState == 4){
+                if(xhr.status == 200){
+                    var usersArray = xhr.response; // not responseText
+                    var _len = usersArray.length;
+                    var tbody = document.querySelector("table tbody");
+                    tbody.innerHTML="";
+                    for(var i=0,j=_len;i<j;i++)
+                    {
+                        var user = usersArray[i];
+                        var name = user.username;
+                        var age = user.age;
+
+                        var tr = document.createElement('tr');
+                        var td1 = document.createElement('td');
+                        td1.innerHTML =name;
+                        var td2 = document.createElement('td');
+                        td2.innerHTML =age;
+                        tr.appendChild(td1);
+                        tr.appendChild(td2);
+                        tbody.appendChild(tr);
+                    }
+                }
+            }
+        }
+        xhr.responseType = 'json';
+        xhr.send();
+    }
+
+</script>
+</html>
