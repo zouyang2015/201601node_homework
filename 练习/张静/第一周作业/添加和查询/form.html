@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style type="text/css">
+        ul,li{
+            list-style: none;
+        }
+        ul li{
+            width: 150px;
+            border: 1px solid yellow;
+        }
+        ul li span{
+            display: inline-block;
+            width: 40px;
+            text-align: center;
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+用户名：<input type="text" name="name" id="username"/><br/>
+<br/>
+年龄：<input type="text" name="age" id="userAge"/>
+<br/>
+<br/>
+<input type="button" value="添加" id="btn"/>
+<br/>
+<br/>
+<input type="button" value="查看数据" id="cat"/>
+<ul id="oul"></ul>
+<script type="text/javascript">
+    var btn=document.getElementById('btn');
+    var cat=document.getElementById('cat');
+    var oul=document.getElementById('oul');
+    btn.onclick=function(){
+        var xhr=new XMLHttpRequest();
+        xhr.open("POST",'/add',true);
+        xhr.onreadystatechange=function(){
+
+            if(xhr.readyState==4&&/2\d{2}/.test(xhr.status)){
+                var str=xhr.responseText;
+                console.log(str);
+            }
+        }
+        var name=document.querySelector("#username").value;
+        var age=document.querySelector("#userAge").value;
+        var obj={};
+        obj.name=name;
+        obj.age=age;
+        xhr.send(JSON.stringify(obj));
+    }
+    cat.onclick=function(){
+        var xhr=new XMLHttpRequest();
+        xhr.open("GET",'/get',true);
+        xhr.onreadystatechange=function(){
+            if(xhr.readyState==4&&/2\d{2}/.test(xhr.status)){
+                var ary=JSON.parse(xhr.responseText);
+                console.log(ary);
+                oul.innerHTML='';
+                for(var i=0;i<ary.length;i++){
+                   var li=document.createElement('li');
+                    ary[i]=JSON.parse(ary[i]);
+                   for(var key in ary[i]){
+                       var span=document.createElement('span');
+                       span.innerHTML=ary[i][key];
+                       li.appendChild(span);
+                   }
+                   oul.appendChild(li);
+               }
+            }
+        }
+        xhr.send();
+    }
+</script>
+</body>
+</html>
