@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>注册页面</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row col-md-10 col-md-offset-1">
+        <div>
+            <div class="row">
+                <div class="form-group col-md-2">
+                    <label for="InputName">姓名</label>
+                    <input type="text" name="name" class="form-control " id="InputName" placeholder="姓名">
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-2">
+                    <label for="InputAge">年龄</label>
+                    <input type="number" name="age" class="form-control" id="InputAge" placeholder="年龄">
+                </div>
+            </div>
+            <div class="row">
+                <button type="submit" id="add" class="btn btn-default" style="margin-left: 15px;">添加</button>
+                <button type="submit" id="ser" class="btn btn-default">查询</button>
+            </div>
+        </div>
+
+        <table class="table" id="addtable">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>姓名</th>
+                <th>年龄</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <table class="table" id="searchtable">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>姓名</th>
+                <th>年龄</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    var add = $("#add");
+    var ser = $("#ser");
+    var user={};
+    add.on('click',function(){
+        var someone=getinput();
+        $.ajax({
+            url:'/user',
+            type:'post',
+            data:JSON.stringify(someone),   //传递json字符串
+            dataType:'json',
+            success:function(data){
+                var html=[];
+                html.push('<tr><th>#</th>');
+                html.push('<td>'+data.username+'</td>');
+                html.push('<td>'+data.age+'</td>');
+                html.push('<td>操作</td></tr>');
+                $('#addtable tbody').append(html.toString());
+            },
+            error:function(){
+                alert("Add Fail");
+            }
+        })
+    });
+
+    function getinput(){
+        var name = $('input[name=name]').val();
+        var age = $('input[name=age]').val();
+        return {username:name,age:age};
+    }
+
+</script>
+</body>
+</html>
