@@ -78,8 +78,6 @@ app.post('/login',urlencodedParser,function(req,res){
     }
 });
 
-
-
 app.get('/logout',function(req,res){
     res.clearCookie('username');
     res.redirect('/');
