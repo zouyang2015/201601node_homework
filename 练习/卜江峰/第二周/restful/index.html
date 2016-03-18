@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>注册页面</title>
+    <title>管理员操作页</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
@@ -89,7 +89,7 @@
     add.on('click',function(){
         var someone=getinput();
         $.ajax({
-            url:'/user',
+            url:'/user/new',
             type:'post',
             data:JSON.stringify(someone),   //传递json字符串
             dataType:'json',
@@ -113,7 +113,7 @@
         var someone=$('.searchuser input[type=text]').val()+'';
         //    console.log(someone);
         $.ajax({
-            url:'/user/'+someone,
+            url:'/user/'+someone+"/none",
             type:'get',
         //  data:someone,   //传递json字符串
             dataType:'json',  //设置json，否则以text查询，得到的data需要通过JSON.Parse转为对象。
