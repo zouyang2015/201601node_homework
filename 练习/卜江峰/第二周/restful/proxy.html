@@ -56,7 +56,7 @@
         var someone=$('.searchuser input[type=text]').val()+'';
         //    console.log(someone);
         $.ajax({
-            url:'/user/'+someone,
+            url:'/user/'+someone+"/none",
             type:'get',
             //  data:someone,   //传递json字符串
             dataType:'json',  //设置json，否则以text查询，得到的data需要通过JSON.Parse转为对象。

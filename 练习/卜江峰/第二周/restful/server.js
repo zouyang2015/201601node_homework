@@ -26,18 +26,68 @@ app.get('/', function(req,res){
     });
     rs.on('end',function(){
         res.send(html);
+    });
+    rs.on('error',function(){
+        res.send('访问成功，但是文件读取失败！');
+    });
+});
+
+
+app.get('/register.html', function(req,res){
+    var rs = fs.createReadStream('register.html');
+    rs.setEncoding('utf8');
+    var html ='';
+    rs.on('data',function(data){
+        html+=data;
+    });
+    rs.on('end',function(){
+        res.send(html);
     })
     rs.on('error',function(){
         res.send('访问成功，但是文件读取失败！');
     });
 });
 
+
+app.get('/login.html', function(req,res){
+    var rs = fs.createReadStream('login.html');
+    rs.setEncoding('utf8');
+    var html ='';
+    rs.on('data',function(data){
+        html+=data;
+    });
+    rs.on('end',function(){
+        res.send(html);
+    })
+    rs.on('error',function(){
+        res.send('访问成功，但是文件读取失败！');
+    });
+});
+
+app.get('/welcome.html', function(req,res){
+    var rs = fs.createReadStream('welcome.html');
+    rs.setEncoding('utf8');
+    var html ='';
+    rs.on('data',function(data){
+        html+=data;
+    });
+    rs.on('end',function(){
+        res.send(html);
+    })
+    rs.on('error',function(){
+        res.send('访问成功，但是文件读取失败！');
+    });
+});
+
+
+
+
 //add someone information
-app.post('/user',function(req,res){
+app.post('/user/:type',function(req,res){
     user.add(req,res);
 });
 //search all user information
-app.get('/user/:username',function(req,res){
+app.get('/user/:username/:password',function(req,res){
     user.list(req,res)
 });
 //delete someone user
@@ -52,6 +102,7 @@ app.put('/user',function(req,res){
 user={
     add:function(req,res){
         console.log('进入添加');
+        var type= req.params.type;
         var str = '';
         req.on('data',function(data){
             str+=data.toString();
@@ -60,15 +111,50 @@ user={
             id+=1;
             str='{"id":"'+id+'",'+str.substring(1);
             users.push(JSON.parse(str));
-            res.end(str);
+            console.log(str);
+            if(req.params.type){
+                switch (type){
+                    case "reg":
+                        // 如何实现服务器端重定向网页跳转
+                        //res.redirect('login.html');  这个似乎是重定向请求
+                        //var rs = fs.createReadStream('login.html');
+                        //rs.setEncoding('utf8');
+                        //var html ='';
+                        //rs.on('data',function(data){
+                        //    html+=data;
+                        //});
+                        //rs.on('end',function(){
+                        //    res.send(html);
+                        //});
+                        res.send({message:"succ"});
+                        break;
+                    case "new":
+                        res.end(str);
+                }
+            }else{
+                res.end(str);
+            }
         });
     },
     list:function(req,res){
         console.log('进入查询');
         var str = req.params.username;
+        var password= req.params.password;
         for(var i = 0 ; i<users.length;i++){
             if(users[i].username == str){
-                res.send(JSON.stringify(users[i]));
+                if(password != ""){
+                    switch (password){
+                        case "none":
+                            res.send(JSON.stringify(users[i]));
+                            break;
+                        case users[i].age:
+                            res.send({message:"succ"});
+                            break;
+                    }
+                }
+                else {
+                    res.send("");
+                }
                 return false;
             }
         }

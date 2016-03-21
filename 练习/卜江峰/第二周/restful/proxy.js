@@ -33,7 +33,7 @@ app.get('/', function(req,res){
     });
 });
 
-app.get('/user/:username',function(req,res){
+app.get('/user/:username/none',function(req,res){
     user.list(req,res)
 });
 
@@ -42,7 +42,7 @@ user={
         var options= {
             host : 'localhost',
             port : '2222',
-            path : '/user/'+req.params.username,
+            path : '/user/'+req.params.username+"/none",
             method : 'GET'
         };
         var str="";
