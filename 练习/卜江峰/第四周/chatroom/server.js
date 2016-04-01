@@ -16,9 +16,8 @@ var clients = {};
 
 io.on('connection', function(socket) {
     var username;
-    socket.send({ user: '系统', content: '请输入用户名' });
     socket.on('message', function(msg) {
-        
+        console.log(msg);
     	// if(username){
      //          //把客户端发过来的消息广播给所有的客户端
      //          for(var s in clients){

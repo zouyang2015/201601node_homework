@@ -71,7 +71,7 @@
                     <img src="./images/icon2.png" />
                 </div>
                 <div class="kuang">
-                    <input type="text" />
+                    <input type="text" ng-model="talkmessage"/>
                 </div>
                 <div class="biaoqing">
                     <img src="./images/icon3.png" />
@@ -99,10 +99,14 @@
                         });
                     });
                 },
+                send:function(message){
+                    socket.send(message);
+                }
             }
         });
         angular.module('chatroom').controller('ChatroomController', function($scope,socketService) {
             $scope.contents=[];
+            var nickname;
             $scope.user={};
             $scope.hasnickname=false;
             // $scope.contents=[
@@ -137,7 +141,10 @@
                     },
                 ];
             });
-
+            socketService.on('message',function(msg){
+                console.log(msg);
+                // $scope.contents.push(msg);
+            });
             // $scope.type='';
             // $scope.users=[
             //     {
@@ -173,25 +180,18 @@
                     if(nickname.length>0){
                         $scope.user.nickname=nickname;
                         $scope.hasnickname=true;
-                        $scope.contents=[
-                            {
-                                notice:{
-                                    user:'您',
-                                    message:'已经加入了混乱的群聊',
-                                },
-                            },
-                        ];
                     }
                 }
             }
             $scope.sendMessage=function(){
-                $scope.contents.push({
-                    me:{
-                        nickname:'文森特',
-                        headimg:'http://wx.qlogo.cn/mmopen/78EkX665csDa8oQeRVgdZdn2ATBQ6EXOk2sv5DKAAZZOBc4pMCboyLrfmrEUmVyOCYUd7Ro3k7MGn7UbjYBf3Q/0',
-                        message:'赞啦！我也要看,ceshi ',
-                    }
-                });
+                socketService.send($scope.talkmessage);
+                // $scope.contents.push({
+                //     me:{
+                //         nickname:nickname,
+                //         headimg:'http://wx.qlogo.cn/mmopen/78EkX665csDa8oQeRVgdZdn2ATBQ6EXOk2sv5DKAAZZOBc4pMCboyLrfmrEUmVyOCYUd7Ro3k7MGn7UbjYBf3Q/0',
+                //         message:'赞啦！我也要看,ceshi ',
+                //     }
+                // });
             }
 
         });
