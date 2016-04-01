@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="bootstrap.css">
+    <style>
+        .user {
+            color: green;
+        }
+    </style>
+</head>
+<body ng-app="chatModule">
+<div class="container" ng-controller="chatCtrl">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-success">
+                <div class="panel panel-heading">欢迎来到聊天室</div>
+                <div class="panel-body">
+                    <ul class="list-group" id="messageUl">
+                        <li class="list-group-item" ng-repeat="msg in msgs">
+                            <span ng-click="addName(msg.user);" class="user">{{msg.user}}</span>:{{msg.content}}
+                        </li>
+                    </ul>
+                </div>
+                <div class="panel-footer">
+                    <div class="row">
+                        <div class="col-xs-10">
+                            <input type="text" ng-keypress="PressKeySendMsg($event);" class="form-control" ng-model="newMsg"
+                                   id="txtMsg">
+                        </div>
+                        <div class="col-xs-2">
+                            <button class="btn btn-default" ng-click="sendMsg();" type="button" id="sendBtn">发言</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="jquery.js"></script>
+<script src="angular.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    angular.module("chatModule", [])
+            .factory("msgService", function () {
+                var msgs = [];
+                return {
+                    list: function () {
+                        return msgs;
+                    },
+                    add: function (msg) {
+                        msgs.push(msg);
+                    }
+                };
+            })
+            .controller("chatCtrl", function ($scope, msgService) {
+                $scope.msgs = msgService.list();
+                $scope.newMsg = "";
+                var socket = io.connect('/');
+                socket.on('connect', function () {
+                    msgService.add({user: '系统', content: '连接成功'});
+                    $scope.$apply(function () {
+
+                    })
+                });
+                //监听服务器发过来的消息
+                socket.on('message', function (msg) {
+                    msgService.add(msg);
+                    $scope.$apply(function () {
+
+                    })
+                });
+                $scope.sendMsg = function () {
+                    if ($scope.newMsg.length > 0) {
+                        var message = $scope.newMsg;
+                        socket.send(message);
+                        $scope.newMsg = "";
+                    }
+                };
+                $scope.PressKeySendMsg = function (event) {
+                    var char = event.charCode || event.keyCode || event.which;
+                    if (char == 13) {
+                        $scope.sendMsg();
+                    }
+                };
+                $scope.addName=function (userName) {
+                    $scope.newMsg='@'+userName+' ';
+                }
+            });
+</script>
+</html>
