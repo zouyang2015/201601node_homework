@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+用户名：<input type="text" name="username" /><br/>
+密码：<input type="text" name="password" /><br/>
+<input type="button" onclick="reg()" value="注册"/><br/>
+查询用户名：<input type="text" name="searchname"/><br/>
+<input type="button" onclick="find()" value="查询"/>
+<table>
+    <tbody>
+        <tr>
+            <td>用户名</td>
+            <td>密码</td>
+        </tr>
+    </tbody>
+</table>
+<br/><br/><br/><br/>
+<div id="search">
+
+</div>
+</body>
+<script>
+    function reg(){
+        var username = document.querySelector("input[name=username]").value;
+        var password = document.querySelector("input[name=password]").value;
+        var user = {
+            name:username,
+            pass:password
+        }
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST","./index",true)
+        xhr.onreadystatechange = function () {
+            if(xhr.readyState == 4){
+                if(xhr.status == 200){
+                    var user = JSON.parse(xhr.response);
+                    var tbody =document.querySelector("table tbody");
+                    var tr = document.createElement("tr");
+                    var td1 = document.createElement("td");
+                    td1.innerHTML = user.name;
+                    var td2 = document.createElement("td");
+                    td2.innerHTML = user.pass;
+                    tr.appendChild(td1);
+                    tr.appendChild(td2);
+                    tbody.appendChild(tr);
+                }else{
+                    console.log('aaa');
+                }
+            }
+        }
+        xhr.send(JSON.stringify(user));
+    }
+    function find(){
+        var searchname = document.querySelector("input[name=searchname]").value;
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST','./search',true);
+        xhr.onreadystatechange = function () {
+            if(xhr.readyState == 4){
+                if(xhr.status == 200){
+                    var searchStr = xhr.response;
+                    var searchContent = document.querySelector("#search")
+                    searchContent.innerHTML = searchStr;
+                }else{
+                    console.log('bbb');
+                }
+            }
+        }
+        xhr.send(searchname);
+    }
+</script>
+</html>
