@@ -12,12 +12,16 @@ var server = require('http').createServer(app);
 server.listen('8080');
 var io = require('socket.io')(server);
 
-var clients = {};
+var clients = [];
 
 io.on('connection', function(socket) {
+	clients.push(socket);
     var username;
-    socket.on('message', function(msg) {
-        console.log(msg);
+    socket.on('message', function(userObj) {
+    	clients.forEach(function(client){
+    		client.send(userObj);
+    	})
+        console.log(userObj);
     	// if(username){
      //          //把客户端发过来的消息广播给所有的客户端
      //          for(var s in clients){
