@@ -85,11 +85,9 @@
     <script src="/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="angular.js"></script>
     <script type="text/javascript">
-        var socket = io.connect('/');
         angular.module('chatroom', []);
         angular.module('chatroom').factory('socketService',function($rootScope){
             var socket = io.connect('/');
-            //会返回一个对象供其它组件来注入
             return {
                 on:function(eventName, callback) {
                     socket.on(eventName, function() {
@@ -109,7 +107,45 @@
             var nickname;
             $scope.user={};
             $scope.hasnickname=false;
-            // $scope.contents=[
+            socketService.on('connect',function(){
+                $scope.contents=[
+                    {
+                        notice:{
+                            user:'您',
+                            message:'已经加入了混乱的群聊',
+                        },
+                    },
+                ];
+            });
+            socketService.on('message',function(msg){
+                console.log(msg);
+                // $scope.contents.push(msg);
+            });
+
+            $scope.setNickName=function(){
+                if($scope.nickname && $scope.nickname.length>0){
+                    var nickname=$scope.nickname;
+                    nickname=nickname.replace(/\s+/g,"");
+                    if(nickname.length>0){
+                        $scope.user.nickname=nickname;
+                        $scope.hasnickname=true;
+                    }
+                }
+            }
+            $scope.sendMessage=function(){
+                socketService.send($scope.talkmessage);
+                // $scope.contents.push({
+                //     me:{
+                //         nickname:nickname,
+                //         headimg:'http://wx.qlogo.cn/mmopen/78EkX665csDa8oQeRVgdZdn2ATBQ6EXOk2sv5DKAAZZOBc4pMCboyLrfmrEUmVyOCYUd7Ro3k7MGn7UbjYBf3Q/0',
+                //         message:'赞啦！我也要看,ceshi ',
+                //     }
+                // });
+            }
+
+        });
+
+        // $scope.contents=[
             //     {
             //         notice:{
             //             user:'XXX',
@@ -131,21 +167,7 @@
             //         }
             //     },
             // ];
-            socketService.on('connect',function(){
-                $scope.contents=[
-                    {
-                        notice:{
-                            user:'您',
-                            message:'已经加入了混乱的群聊',
-                        },
-                    },
-                ];
-            });
-            socketService.on('message',function(msg){
-                console.log(msg);
-                // $scope.contents.push(msg);
-            });
-            // $scope.type='';
+        // $scope.type='';
             // $scope.users=[
             //     {
             //         nickname:'凡凡',
@@ -173,28 +195,6 @@
             //         message:'852',
             //     },
             // ];
-            $scope.setNickName=function(){
-                if($scope.nickname && $scope.nickname.length>0){
-                    var nickname=$scope.nickname;
-                    nickname=nickname.replace(/\s+/g,"");
-                    if(nickname.length>0){
-                        $scope.user.nickname=nickname;
-                        $scope.hasnickname=true;
-                    }
-                }
-            }
-            $scope.sendMessage=function(){
-                socketService.send($scope.talkmessage);
-                // $scope.contents.push({
-                //     me:{
-                //         nickname:nickname,
-                //         headimg:'http://wx.qlogo.cn/mmopen/78EkX665csDa8oQeRVgdZdn2ATBQ6EXOk2sv5DKAAZZOBc4pMCboyLrfmrEUmVyOCYUd7Ro3k7MGn7UbjYBf3Q/0',
-                //         message:'赞啦！我也要看,ceshi ',
-                //     }
-                // });
-            }
-
-        });
     </script>
 </body>
 </html>
