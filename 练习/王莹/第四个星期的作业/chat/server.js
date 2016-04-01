@@ -24,15 +24,18 @@ io.on('connection',function(scoket){
         console.log(message);
         switch (message.type){
             case 'setName':
-                user.name=message.Name;     //保存本人信息
+                user.name=message.name;     //保存本人信息
                 user.scoket=scoket;
                 user.id=scoket.id;
-                users.addUser(message.Name,scoket);
+                users.addUser(message.name,scoket);
                 mail.online(scoket);
-                //scoket.send({success:true,users:users.getUsers(),type:'setName'});
                 break;
             case 'word':
-                mail.message(message.message,scoket.id);
+                mail.message(message.word,scoket);
+                console.log('发送成功');
+                break;
+            case 'one':
+                mail.message(message.word,scoket,message.id);
                 console.log('发送成功');
                 break;
             default:
@@ -44,7 +47,7 @@ io.on('connection',function(scoket){
     })
 })
 
-server.listen(80,'192.168.2.106',function(err){
+server.listen(80,'127.0.0.1',function(err){
     if(err)
         console.log(err);
     else

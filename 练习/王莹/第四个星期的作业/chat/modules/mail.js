@@ -1,14 +1,14 @@
 var users=require('./users.js');
 
-message=function(word,user,id){
-    if(!word || !user)
+message=function(word,scoket,id){
+    if(!word || !scoket)
     throw new Error('Parameters Cannot Be Empty');
 
     users.users.forEach(function(user){
         if(id==undefined)
-        user.scoket.send({name:user.name,id:user.id,word:word,type:'word'});
-        else if(user.id==id)
-        user.scoket.send({name:user.name,id:user.id,word:word,type:'word'})
+        user.scoket.send({name:user.name,id:user.id,word:word,type:'word',bool:user.id==scoket.id});
+        else if(user.id==id || user.id==scoket.id)
+        user.scoket.send({name:user.name,id:user.id,word:word,type:'word',bool:user.id==scoket.id})
     })
 }
 
