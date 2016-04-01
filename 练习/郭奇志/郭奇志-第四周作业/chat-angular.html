@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="gqzMod">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="bootstrap.css">
+    <style>
+        .user{
+            color:green;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-success">
+                <div class="panel panel-heading">欢迎来到奇奇聊天室</div>
+
+                <div class="panel-body">
+                    <ul class="list-group" id="messageUl"  ng-repeat="m in message" >
+                        <li class="list-group-item" ng-click="priviteChat()">{{m.user}}:{{m.content}}</li>
+                    </ul>
+                </div>
+
+                <div class="panel-footer">
+                    <div class="row">
+                        <div class="col-xs-10">
+                            <input type="text" class="form-control" id="txtMsg" ng-model="voice">
+                        </div>
+                        <div class="col-xs-2">
+                            <button class="btn btn-default" type="button" id="sendBtn" ng-click="sendMsg()" ng-keydown="keydown($event)">发言</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="angular.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+        angular.module('gqzMod',[]);
+        angular.module('gqzMod').controller('gqzCtrl',function($scope){
+             $scope.message=[];
+             window.onload=function(){
+                var socket = io.connect('/');
+                socket.on('connect', function () {
+                    $scope.message.user='系统'
+                    $scope.message.content='连接成功'
+                })
+                socket.on('meaasge', function (msg) {
+                    $scope.message.push(msg);
+                })
+             }
+
+            $scope.sendMsg=function(){
+                if($scope.voice && $scope.voice.length>0){
+                    socket.send($scope.voice);
+                    $scope.voice=null;
+                }
+            };
+            $scope.priviteChat=function(){
+                $scope.voice='@'+$scope.voice+' ';
+            }
+            $scope.keydown=function($event){
+                $scope.sendMsg();
+            }
+        })
+</script>
