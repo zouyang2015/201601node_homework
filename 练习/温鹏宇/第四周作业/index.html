@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html ng-app="chatapp">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="bootstrap.css"/>
+</head>
+<style>
+    .user{
+        color:green;
+    }
+</style>
+
+<body>
+<div class="container" ng-controller="chatController">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-success">
+                <!-- 添加头部信息-->
+                <div class="panel panel-heading">欢迎来到聊天室</div>
+                <div class="panel panel-body">
+                    <ul class="list-group" ng-repeat="msg in msgs" ng-click="itemClick($event, msg)" selector="ul li span user" >
+                        <li class="list-group-item"><span class="user">{{msg.user}}：</span>{{msg.content}}</li>
+                    </ul>
+                </div>
+                <div class="panel panel-footer">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <input type="text"  ng-keypress="pressSendMsg($event)"  ng-model="msg" class="form-control" id="txtMsg" />
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-primary" ng-click="sendMsg()" >发言</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="jquery.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="angular.js"></script>
+<script src="angular-delegates.js"></script>
+<script>
+    angular.module('chatapp',['DelegateEvents']).controller('chatController',function($scope){
+        $scope.msg={};
+        $scope.msgs = [];
+        $scope.addMsg = function(msg){
+            $scope.$apply(function(){
+                $scope.msgs.push(msg);
+            });
+        $("#txtMsg").val("");
+        }
+        $scope.socket  = io.connect('/');
+        $scope.socket.on('connect',function(){
+            $scope.addMsg({user:'系统提示',content:'连接成功'});
+        });
+        $scope.socket.on('message',function(msg){
+            $scope.addMsg(msg);
+            $scope.msg = {};
+        });
+        $scope.pressSendMsg = function(event){
+            console.log('进入回车');
+            var char = event.charCode || event.keyCode || event.which;
+            if(char == 13){
+                $scope.sendMsg();
+            }
+        }
+        $scope.itemClick = function(e, msg){
+           // console.log(item);
+           $scope.msg =  ('@'+msg.user+' ');
+        }
+        $scope.sendMsg = function(){
+            console.log($scope.msg);
+            if($scope.msg&&$scope.msg.length>0){
+                $scope.socket.send($scope.msg);
+                $scope.msg = {};
+            }
+        }
+});
+</script>
+</html>
