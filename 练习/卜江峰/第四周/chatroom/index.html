@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>聊天</title>
+    <link rel="stylesheet" type="text/css" href="/css/index.css">
+    <link rel="stylesheet" type="text/css" href="/css/weui.css">
+</head>
+<style>
+
+</style>
+<body ng-app="chatroom">
+    <div  ng-controller="ChatroomController">
+            <div class="weui_dialog_alert" ng-hide="hasnickname">
+                <div class="weui_mask"></div>
+                <div class="weui_dialog">
+                    <div class="weui_dialog_hd"><strong class="weui_dialog_title">请输入昵称</strong></div>
+                    <div class="weui_dialog_bd"><input type="text" autofocus="autofocus" ng-model="nickname"/></div>
+                    <div class="weui_dialog_ft">
+                        <a href="javascript:;" class="weui_btn_dialog primary" ng-click="setNickName()">确定</a>
+                    </div>
+                </div>
+            </div>
+        <div class="box">
+            <ul>
+                <li ng-repeat="content in contents" class="msg clearfix">
+                    <div ng-if="content.notice" class="title1">
+                        <p ><span ng-bind="content.notice.user"></span><span ng-bind="content.notice.message">加入了群聊</span></p>
+                    </div>
+                    <div ng-if="content.user">
+                        <div class="starHead"><img ng-src="{{content.user.headimg}}"/></div>
+                        <div class="starRight">
+                            <div class="starName" ng-bind="content.user.nickname"></div>
+                            <div class="qipao">
+                                <div class="qipao1">
+                                    <img src="./images/qipao.png" />
+                                </div>
+                                <div class="qipao2">
+                                    <p class="content" ng-bind="content.user.message"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-if="content.me">
+                        <div class="userHead"><img ng-src="{{content.me.headimg}}" /></div>
+                        <div class="userLeft">
+                            <p class="uesrName" ng-bind="content.me.nickname"></p>
+                            <div class="userqipao">
+                                <div class="userqipao1">
+                                    <img src="./images/qipao2.png" />
+                                </div>
+                                <div class="userqipao2">
+                                    <p class="content" ng-bind="content.me.message"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <!--底部输入部分-->
+        <div class="inputBox">
+            <div class="input clearfix">
+                <div class="yuying">
+                    <img src="./images/icon2.png" />
+                </div>
+                <div class="kuang">
+                    <input type="text" ng-keypress="quiksendMessage()" ng-model="talkmessage"/>
+                </div>
+                <div class="biaoqing">
+                    <img src="./images/icon3.png" />
+                </div>
+                <a href="javascript:;" class="send" ng-click="sendMessage()">
+                    <img src="./images/btn-send.png" />
+                </a>
+            </div>
+        </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="angular.js"></script>
+    <script type="text/javascript">
+        angular.module('chatroom', []);
+        var headimglist=['./images/head1.png', './images/head2.png', './images/head3.png', './images/head4.png', './images/head5.png'];
+        var random=Math.floor(Math.random()*5);
+        angular.module('chatroom').factory('socketService',function($rootScope){
+            var socket = io.connect('/');
+            return {
+                on:function(eventName, callback) {
+                    socket.on(eventName, function() {
+                        var args = arguments;
+                        $rootScope.$apply(function() {
+                            callback.apply(socket, args);
+                        });
+                    });
+                },
+                send:function(message){
+                    socket.send(message);
+                }
+            }
+        });
+        angular.module('chatroom').controller('ChatroomController', function($scope,socketService) {
+            $scope.contents=[];
+            var nickname;
+            var this_user={
+                user:{
+                    headimg:headimglist[random],
+                    nickname:'',
+                    message:'',
+                }
+            };
+            $scope.hasnickname=false;
+            socketService.on('connect',function(){
+                console.log("链接成功！");
+            });
+            socketService.on('message',function(userObj){
+                if(userObj.user){
+                    if(userObj.user.nickname==this_user.user.nickname){
+                        var selfObj={me:{}};
+                        selfObj.me=userObj.user;
+                        console.log(selfObj);
+                        $scope.contents.push(selfObj);
+                    }else{
+                        $scope.contents.push(userObj);
+                    }
+                }else{
+                    $scope.contents.push(userObj);
+                }
+                
+                // $scope.contents.push(msg);
+            });
+            $scope.setNickName=function(){
+                if($scope.nickname && $scope.nickname.length>0){
+                    var nickname=$scope.nickname;
+                    nickname=nickname.replace(/\s+/g,"");
+                    if(nickname.length>0){
+                        this_user.user.nickname=nickname;
+                        $scope.hasnickname=true;
+                        var this_option={
+                            notice:{
+                                user:nickname,
+                                message:'已经加入了混乱的群聊',
+                            },
+                        }
+                        socketService.send(this_option);
+                    }
+                }
+            }
+            $scope.sendMessage=function(){
+                if($scope.talkmessage && $scope.talkmessage.length>0){
+                    this_user.user.message=$scope.talkmessage;
+                    console.log(this_user);
+                    socketService.send(this_user);
+                    $scope.talkmessage='';
+                }
+            }
+            $scope.quiksendMessage=function(){
+                var char = event.charCode || event.keyCode || event.which;
+                if(char == 13){
+                   $scope.sendMessage();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
